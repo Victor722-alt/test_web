@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion de la Base de Données - LocationMaison</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-color: #667eea;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            padding: 2rem 0;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 1.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .data-preview {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+        }
+
+        .alert {
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="display-4 fw-bold">
+                    <i class="fas fa-database me-2"></i>Gestion de la Base de Données
+                </h1>
+                <p class="lead text-muted">Visualisez et gérez vos données</p>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" id="totalHouses">0</div>
+                    <div class="text-muted">Propriétés</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" id="totalUsers">0</div>
+                    <div class="text-muted">Utilisateurs</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" id="availableHouses">0</div>
+                    <div class="text-muted">Disponibles</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" id="loggedInUser">-</div>
+                    <div class="text-muted">Connecté</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-tools me-2"></i>Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <button class="btn btn-primary w-100" onclick="refreshData()">
+                                    <i class="fas fa-sync me-2"></i>Actualiser
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-success w-100" onclick="exportDB()">
+                                    <i class="fas fa-download me-2"></i>Exporter
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-info w-100" onclick="importSampleData()">
+                                    <i class="fas fa-file-import me-2"></i>Importer Exemple
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-danger w-100" onclick="clearAllData()">
+                                    <i class="fas fa-trash me-2"></i>Tout Effacer
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-6">
+                                <label class="form-label">Importer depuis un fichier JSON</label>
+                                <input type="file" class="form-control" id="importFile" accept=".json" onchange="importFromFile(event)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Houses Data -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-home me-2"></i>Propriétés</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="data-preview" id="housesPreview">
+                            <div class="text-center text-muted">Chargement...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Data -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-users me-2"></i>Utilisateurs</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="data-preview" id="usersPreview">
+                            <div class="text-center text-muted">Chargement...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Container -->
+        <div id="alertContainer"></div>
+
+        <!-- Back Button -->
+        <div class="row">
+            <div class="col-12">
+                <a href="index.html" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Retour à l'accueil
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Database Utility -->
+    <script src="database.js"></script>
+    <script>
+        function showAlert(message, type = 'info') {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show`;
+            alert.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            alertContainer.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        function refreshData() {
+            // Update stats
+            const houses = getAllHouses();
+            const userDB = JSON.parse(localStorage.getItem(USER_DB_KEY) || '{"users":[]}');
+            const users = userDB.users || [];
+            const currentUser = getCurrentUser();
+            
+            document.getElementById('totalHouses').textContent = houses.length;
+            document.getElementById('totalUsers').textContent = users.length;
+            document.getElementById('availableHouses').textContent = houses.filter(h => h.status === 'available').length;
+            document.getElementById('loggedInUser').textContent = currentUser ? currentUser.fullName : 'Non';
+            
+            // Update houses preview
+            if (houses.length > 0) {
+                document.getElementById('housesPreview').innerHTML = 
+                    '<pre>' + JSON.stringify(houses, null, 2) + '</pre>';
+            } else {
+                document.getElementById('housesPreview').innerHTML = 
+                    '<div class="text-center text-muted">Aucune propriété enregistrée</div>';
+            }
+            
+            // Update users preview (hide passwords)
+            if (users.length > 0) {
+                const usersSafe = users.map(u => ({
+                    id: u.id,
+                    fullName: u.fullName,
+                    email: u.email,
+                    createdAt: u.createdAt
+                }));
+                document.getElementById('usersPreview').innerHTML = 
+                    '<pre>' + JSON.stringify(usersSafe, null, 2) + '</pre>';
+            } else {
+                document.getElementById('usersPreview').innerHTML = 
+                    '<div class="text-center text-muted">Aucun utilisateur enregistré</div>';
+            }
+            
+            showAlert('Données actualisées', 'success');
+        }
+
+        function exportDB() {
+            try {
+                exportDatabase();
+                showAlert('Base de données exportée avec succès', 'success');
+            } catch (error) {
+                showAlert('Erreur lors de l\'export: ' + error.message, 'danger');
+            }
+        }
+
+        async function importSampleData() {
+            try {
+                const response = await fetch('database-sample.json');
+                if (!response.ok) {
+                    throw new Error('Fichier sample non trouvé');
+                }
+                const sampleData = await response.json();
+                
+                // Import houses
+                const currentDB = JSON.parse(localStorage.getItem(DB_KEY) || '{"houses":[],"lastId":0}');
+                const mergedHouses = [...currentDB.houses, ...sampleData.houses];
+                const newLastId = Math.max(currentDB.lastId || 0, sampleData.lastId || 0);
+                
+                const updatedDB = {
+                    houses: mergedHouses,
+                    lastId: newLastId,
+                    createdAt: currentDB.createdAt || new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+                
+                localStorage.setItem(DB_KEY, JSON.stringify(updatedDB));
+                showAlert('Données d\'exemple importées avec succès', 'success');
+                refreshData();
+            } catch (error) {
+                showAlert('Erreur lors de l\'import: ' + error.message, 'danger');
+            }
+        }
+
+        function importFromFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            importDatabase(file)
+                .then(() => {
+                    showAlert('Fichier importé avec succès', 'success');
+                    refreshData();
+                })
+                .catch(error => {
+                    showAlert('Erreur lors de l\'import: ' + error.message, 'danger');
+                });
+        }
+
+        function clearAllData() {
+            if (confirm('Êtes-vous sûr de vouloir effacer toutes les données ? Cette action est irréversible.')) {
+                localStorage.removeItem(DB_KEY);
+                localStorage.removeItem(USER_DB_KEY);
+                localStorage.removeItem(SESSION_KEY);
+                initDatabase();
+                showAlert('Toutes les données ont été effacées', 'warning');
+                refreshData();
+            }
+        }
+
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshData();
+        });
+    </script>
+</body>
+</html>
+

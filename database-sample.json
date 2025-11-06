@@ -1,0 +1,92 @@
+{
+  "houses": [
+    {
+      "id": 1,
+      "title": "Maison moderne 3 chambres",
+      "propertyType": "maison",
+      "address": "123 Boulevard de la Marina",
+      "city": "Cotonou",
+      "postalCode": "01 BP",
+      "country": "Bénin",
+      "area": 120,
+      "bedrooms": 3,
+      "bathrooms": 2,
+      "parking": 1,
+      "price": 500000,
+      "deposit": 1000000,
+      "description": "Belle maison moderne avec jardin, proche des transports et commerces.",
+      "features": ["wifi", "heating", "washingMachine", "garden"],
+      "contact": {
+        "name": "Jean Dupont",
+        "email": "jean.dupont@example.com",
+        "phone": "+229 96 12 34 56"
+      },
+      "availability": "2024-02-01",
+      "imageCount": 0,
+      "images": [],
+      "status": "available",
+      "createdAt": "2024-01-15T10:00:00.000Z",
+      "updatedAt": "2024-01-15T10:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "title": "Villa avec jardin",
+      "propertyType": "villa",
+      "address": "45 Avenue de la Paix",
+      "city": "Porto-Novo",
+      "postalCode": "01 BP",
+      "country": "Bénin",
+      "area": 180,
+      "bedrooms": 4,
+      "bathrooms": 3,
+      "parking": 2,
+      "price": 800000,
+      "deposit": 1600000,
+      "description": "Magnifique villa avec grand jardin, piscine et garage double.",
+      "features": ["wifi", "heating", "airConditioning", "washingMachine", "dishwasher", "garden"],
+      "contact": {
+        "name": "Marie Martin",
+        "email": "marie.martin@example.com",
+        "phone": "+229 97 65 43 21"
+      },
+      "availability": "2024-03-01",
+      "imageCount": 0,
+      "images": [],
+      "status": "available",
+      "createdAt": "2024-01-16T14:30:00.000Z",
+      "updatedAt": "2024-01-16T14:30:00.000Z"
+    },
+    {
+      "id": 3,
+      "title": "Maison familiale",
+      "propertyType": "maison",
+      "address": "78 Route de l'Aéroport",
+      "city": "Cotonou",
+      "postalCode": "01 BP",
+      "country": "Bénin",
+      "area": 140,
+      "bedrooms": 3,
+      "bathrooms": 2,
+      "parking": 1,
+      "price": 600000,
+      "deposit": 1200000,
+      "description": "Charmante maison familiale proche de la mer, idéale pour une famille.",
+      "features": ["wifi", "heating", "washingMachine", "balcony"],
+      "contact": {
+        "name": "Pierre Bernard",
+        "email": "pierre.bernard@example.com",
+        "phone": "+229 95 11 22 33"
+      },
+      "availability": "2024-02-15",
+      "imageCount": 0,
+      "images": [],
+      "status": "available",
+      "createdAt": "2024-01-17T09:15:00.000Z",
+      "updatedAt": "2024-01-17T09:15:00.000Z"
+    }
+  ],
+  "lastId": 3,
+  "createdAt": "2024-01-15T10:00:00.000Z",
+  "updatedAt": "2024-01-17T09:15:00.000Z"
+}
+

@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location de Maison - Trouvez votre maison idéale</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-link {
+            color: #333 !important;
+            font-weight: 500;
+            margin: 0 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-color) !important;
+        }
+
+        .btn-nav {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .btn-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--primary-gradient);
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+
+        .search-box {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+
+        .search-input {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            outline: none;
+        }
+
+        .btn-search {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .btn-search:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 0;
+            background: #f8f9fa;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: white;
+            font-size: 2rem;
+        }
+
+        /* Properties Section */
+        .properties {
+            padding: 5rem 0;
+        }
+
+        .property-card {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+        }
+
+        .property-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .property-image {
+            height: 250px;
+            background: var(--primary-gradient);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .property-image::before {
+            content: '🏠';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5rem;
+            opacity: 0.3;
+        }
+
+        .property-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--primary-gradient);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .property-info {
+            padding: 1.5rem;
+        }
+
+        .property-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .property-location {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .property-features {
+            display: flex;
+            gap: 1.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .property-features i {
+            color: var(--primary-color);
+            margin-right: 0.5rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: var(--primary-gradient);
+            padding: 5rem 0;
+            color: white;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .btn-cta {
+            background: white;
+            color: var(--primary-color);
+            border: none;
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            color: var(--primary-color);
+        }
+
+        /* Footer */
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+
+        .footer h5 {
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .footer a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 2rem;
+            padding-top: 1rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .search-box {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-home"></i> LocationMaison
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#accueil">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#proprietes">Propriétés</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#services">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="db-manager.html"><i class="fas fa-database"></i> DB</a>
+                    </li> -->
+                    <li class="nav-item ms-2" id="userNavItem" style="display: none;">
+                        <div class="dropdown">
+                            <button class="btn btn-nav dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+                                <i class="fas fa-user me-2"></i><span id="userNameNav"></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="add-house.html"><i class="fas fa-plus me-2"></i>Ajouter une maison</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Déconnexion</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item ms-2" id="loginNavItem">
+                        <a href="login.html" class="btn btn-nav">Connexion</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="accueil">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 hero-content">
+                    <h1>Trouvez votre maison idéale</h1>
+                    <p>Découvrez une large sélection de maisons à louer. Des propriétés de qualité pour tous les budgets.</p>
+                </div>
+                <div class="col-lg-6">
+                    <div class="search-box">
+                        <h4 class="mb-4" style="color: #333;">Rechercher une propriété</h4>
+                        <form>
+                            <div class="mb-3">
+                                <input type="text" class="form-control search-input" id="searchLocation" placeholder="📍 Localisation">
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <select class="form-control search-input" id="searchPropertyType">
+                                        <option value="">Type de propriété</option>
+                                        <option value="maison">Maison</option>
+                                        <option value="villa">Villa</option>
+                                        <option value="appartement">Appartement</option>
+                                        <option value="studio">Studio</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <select class="form-control search-input" id="searchMaxPrice">
+                                        <option value="">Prix max</option>
+                                        <option value="300000 FCFA/mois">300 000 FCFA/mois</option>
+                                        <option value="500000 FCFA/mois">500 000 FCFA/mois</option>
+                                        <option value="1000000 FCFA/mois">1 000 000 FCFA/mois</option>
+                                        <option value="2000000 FCFA/mois">2 000 000+ FCFA/mois</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-search">
+                                    <i class="fas fa-search me-2"></i>Rechercher
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="services">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold mb-3">Pourquoi nous choisir ?</h2>
+                <p class="lead text-muted">Des services de qualité pour votre recherche immobilière</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4>Sécurisé</h4>
+                        <p class="text-muted">Toutes nos propriétés sont vérifiées et sécurisées pour votre tranquillité d'esprit.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-search-location"></i>
+                        </div>
+                        <h4>Recherche facile</h4>
+                        <p class="text-muted">Trouvez rapidement la propriété qui correspond à vos critères grâce à notre moteur de recherche avancé.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h4>Support 24/7</h4>
+                        <p class="text-muted">Notre équipe est disponible à tout moment pour vous accompagner dans votre recherche.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Properties Section -->
+    <section class="properties" id="proprietes">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold mb-3">Propriétés en vedette</h2>
+                <p class="lead text-muted">Découvrez nos meilleures offres</p>
+            </div>
+            <div class="row g-4" id="propertiesContainer">
+                <!-- Properties will be loaded dynamically from database -->
+            </div>
+            <div id="noProperties" class="text-center py-5" style="display: none;">
+                <i class="fas fa-home fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">Aucune propriété disponible</h4>
+                <p class="text-muted">Soyez le premier à ajouter une propriété !</p>
+                <a href="add-house.html" class="btn btn-primary mt-3">
+                    <i class="fas fa-plus me-2"></i>Ajouter une maison
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Prêt à trouver votre maison ?</h2>
+            <p>Rejoignez des milliers de personnes qui ont trouvé leur maison idéale</p>
+            <a href="register.html" class="btn btn-cta">Créer un compte gratuit</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5><i class="fas fa-home"></i> LocationMaison</h5>
+                    <p>Votre partenaire de confiance pour trouver la maison de vos rêves. Des milliers de propriétés disponibles.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Liens rapides</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#accueil">Accueil</a></li>
+                        <li><a href="#proprietes">Propriétés</a></li>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="login.html">Connexion</a></li>
+                        <li><a href="register.html">Inscription</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Contact</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-phone me-2"></i> +229 21 30 00 00</li>
+                        <li><i class="fas fa-envelope me-2"></i> contact@locationmaison.bj</li>
+                        <li><i class="fas fa-map-marker-alt me-2"></i> Cotonou, Bénin</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 LocationMaison. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Database Utility -->
+    <script src="database.js"></script>
+    <script>
+        // Load and display properties from database
+        function loadProperties(filters = {}) {
+            const container = document.getElementById('propertiesContainer');
+            const noProperties = document.getElementById('noProperties');
+            
+            let houses = filters && Object.keys(filters).length > 0 
+                ? searchHouses(filters) 
+                : getAllHouses();
+            
+            // Filter only available houses
+            houses = houses.filter(house => house.status === 'available');
+            
+            container.innerHTML = '';
+            
+            if (houses.length === 0) {
+                container.style.display = 'none';
+                noProperties.style.display = 'block';
+                return;
+            }
+            
+            container.style.display = 'flex';
+            noProperties.style.display = 'none';
+            
+            houses.forEach(house => {
+                const propertyCard = createPropertyCard(house);
+                container.appendChild(propertyCard);
+            });
+        }
+        
+        function createPropertyCard(house) {
+            const col = document.createElement('div');
+            col.className = 'col-md-4';
+            
+            // Get first image or use default
+            const imageUrl = house.images && house.images.length > 0 
+                ? house.images[0] 
+                : null;
+            
+            const imageStyle = imageUrl 
+                ? `background-image: url('${imageUrl}'); background-size: cover; background-position: center;`
+                : '';
+            
+            col.innerHTML = `
+                <div class="property-card">
+                    <div class="property-image" style="${imageStyle}">
+                        <span class="property-badge">${house.status === 'available' ? 'Disponible' : 'Indisponible'}</span>
+                    </div>
+                    <div class="property-info">
+                        <div class="property-price">${formatPrice(house.price)} FCFA/mois</div>
+                        <h5 class="mb-2">${house.title}</h5>
+                        <p class="property-location">
+                            <i class="fas fa-map-marker-alt text-danger"></i> ${house.city}, ${house.postalCode}
+                        </p>
+                        <div class="property-features">
+                            <span><i class="fas fa-bed"></i>${house.bedrooms} chambre${house.bedrooms > 1 ? 's' : ''}</span>
+                            <span><i class="fas fa-bath"></i>${house.bathrooms} salle${house.bathrooms > 1 ? 's' : ''} de bain</span>
+                            <span><i class="fas fa-ruler-combined"></i>${house.area} m²</span>
+                        </div>
+                        ${house.parking > 0 ? `<div class="mt-2"><small class="text-muted"><i class="fas fa-car"></i> ${house.parking} place${house.parking > 1 ? 's' : ''} de parking</small></div>` : ''}
+                    </div>
+                </div>
+            `;
+            
+            return col;
+        }
+        
+        // Search form handler
+        const searchForm = document.querySelector('.search-box form');
+        if (searchForm) {
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const filters = {
+                    city: document.getElementById('searchLocation').value,
+                    propertyType: document.getElementById('searchPropertyType').value,
+                    maxPrice: document.getElementById('searchMaxPrice').value
+                };
+                
+                // Remove empty filters
+                Object.keys(filters).forEach(key => {
+                    if (!filters[key] || filters[key] === '') {
+                        delete filters[key];
+                    }
+                });
+                
+                // Convert maxPrice from string like "1000000 FCFA/mois" to number
+                if (filters.maxPrice) {
+                    // Remove spaces and extract number
+                    const priceMatch = filters.maxPrice.replace(/\s/g, '').match(/(\d+)/);
+                    if (priceMatch) {
+                        filters.maxPrice = priceMatch[1];
+                    } else {
+                        delete filters.maxPrice;
+                    }
+                }
+                
+                loadProperties(filters);
+                
+                // Scroll to properties section
+                document.getElementById('proprietes').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        }
+        
+        // Format price with spaces for thousands
+        function formatPrice(price) {
+            return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+        }
+        
+        // Update navigation based on login status
+        function updateNavigation() {
+            const currentUser = getCurrentUser();
+            const userNavItem = document.getElementById('userNavItem');
+            const loginNavItem = document.getElementById('loginNavItem');
+            const userNameNav = document.getElementById('userNameNav');
+            
+            if (currentUser) {
+                userNavItem.style.display = 'block';
+                loginNavItem.style.display = 'none';
+                userNameNav.textContent = currentUser.fullName;
+            } else {
+                userNavItem.style.display = 'none';
+                loginNavItem.style.display = 'block';
+            }
+        }
+        
+        // Logout handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    logoutUser();
+                    updateNavigation();
+                    loadProperties();
+                    alert('Vous avez été déconnecté.');
+                });
+            }
+        });
+        
+        // Load properties on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNavigation();
+            loadProperties();
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navbar background on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+            }
+        });
+    </script>
+</body>
+</html>
+
